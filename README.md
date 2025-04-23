@@ -1,1 +1,1 @@
-# Event Management App
+# Event Mate App
