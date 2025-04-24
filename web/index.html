@@ -8,7 +8,7 @@
     The path provided below has to start and end with a slash "/" in order for
     it to work correctly.
 
-    For more details:
+    For embrace details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
 
     This is a placeholder for base href that will be replaced by the value of
@@ -21,8 +21,7 @@
   <meta name="description" content="A new Flutter project.">
   
   <!-- Google Sign-In Client ID -->
-  <!-- Replace the placeholder below with your actual Google Client ID from Google Cloud Console -->
-  <meta name="google-signin-client_id" content="236280531708-1008968504628-cg8s9gcuckn4e9vjeu71ds9hf9nioom3.apps.googleusercontent.com">
+  <meta name="google-signin-client_id" content="1008968504628-cg8s9gcuckn4e9vjeu71ds9hf9nioom3.apps.googleusercontent.com">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,14 +35,64 @@
   <title>event_management_app</title>
   <link rel="manifest" href="manifest.json">
 
+  <!-- Load Google API Client Library -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Load Google Sign-In Library -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <script>
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
+
+    // Initialize gapi.client after the library is loaded
+    function initGapi() {
+      gapi.load('client', function() {
+        gapi.client.init({
+          // Optional: Add your API key or discoveryDocs for specific APIs
+          // apiKey: 'YOUR_API_KEY',
+          // discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+        }).then(function() {
+          console.log('gapi.client initialized successfully');
+        }).catch(function(error) {
+          console.error('Error initializing gapi.client:', error);
+        });
+      });
+    }
+
+    // Function to set OAuth token
+    function setGapiToken(accessToken) {
+      if (gapi.client) {
+        gapi.client.setToken({
+          access_token: accessToken
+        });
+        console.log('OAuth token set successfully');
+        // Optional: Test with an API call (e.g., Google Drive)
+        // gapi.client.drive.files.list().then(response => {
+        //   console.log('Files:', response.result.files);
+        // }).catch(error => {
+        //   console.error('API error:', error);
+        // });
+      } else {
+        console.error('gapi.client is not loaded');
+      }
+    }
+
+    // Load gapi when the page loads
+    window.addEventListener('load', function() {
+      if (typeof gapi !== 'undefined') {
+        initGapi();
+      } else {
+        console.error('Google API script not loaded');
+      }
+    });
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
 <body>
+  <!-- Optional: Add Google Sign-In button (if not handled in Flutter) -->
+  <!-- <div id="g_id_signin" data-type="standard" data-callback="handleSignIn"></div> -->
+
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
@@ -58,6 +107,15 @@
         }
       });
     });
+
+    // Optional: Handle Google Sign-In callback (if using Google Sign-In button)
+    // function handleSignIn(response) {
+    //   const credential = response.credential;
+    //   // Decode JWT to extract access token (adjust based on your needs)
+    //   const decoded = JSON.parse(atob(credential.split('.')[1]));
+    //   const accessToken = decoded.access_token; // Note: Adjust token retrieval
+    //   setGapiToken(accessToken);
+    // }
   </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ import 'package:event_management_app/constants/colors.dart';
 import 'package:event_management_app/containers/custom_headtext.dart';
 import 'package:event_management_app/containers/custom_input_form.dart';
 import 'package:event_management_app/database.dart';
-import 'package:event_management_app/saved_data.dart';
+import 'package:event_management_app/utils/saved_data.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -324,7 +324,7 @@ class _CreateEventPageState extends State<CreateEventPage>
                           .then((value) => createEvent(
                               _nameController.text,
                               _descController.text,
-                              value??"66629e1a0000e9198561",
+                              value ?? "66629e1a0000e9198561",
                               _locationController.text,
                               _dateTimeController.text,
                               userId,

@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:event_management_app/saved_data.dart';
+import 'package:appwrite/models.dart' as models;
+import 'package:event_management_app/utils/saved_data.dart';
 
 import 'auth.dart';
 
@@ -83,13 +84,14 @@ Future<void> createEvent(
 }
 
 // Read all Events
-Future getAllEvents() async {
+Future<List<models.Document>> getAllEvents() async {
   try {
     final data = await databases.listDocuments(
         databaseId: databaseId, collectionId: "64bb726399a1320b557f");
     return data.documents;
   } catch (e) {
-    print(e);
+    print("Error fetching events: $e");
+    return [];
   }
 }
 
@@ -113,7 +115,7 @@ Future rsvpEvent(List participants, String documentId) async {
 
 // list all event created by the user
 
-Future manageEvents() async {
+Future<List<models.Document>> manageEvents() async {
   final userId = SavedData.getUserId();
   try {
     final data = await databases.listDocuments(
@@ -122,7 +124,8 @@ Future manageEvents() async {
         queries: [Query.equal("createdBy", userId)]);
     return data.documents;
   } catch (e) {
-    print(e);
+    print("Error fetching managed events: $e");
+    return [];
   }
 }
 

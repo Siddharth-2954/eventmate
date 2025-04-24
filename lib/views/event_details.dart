@@ -2,7 +2,7 @@ import 'package:appwrite/models.dart';
 import 'package:event_management_app/constants/colors.dart';
 import 'package:event_management_app/containers/format_datetime.dart';
 import 'package:event_management_app/database.dart';
-import 'package:event_management_app/saved_data.dart';
+import 'package:event_management_app/utils/saved_data.dart';
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';

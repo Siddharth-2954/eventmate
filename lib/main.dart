@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:event_management_app/saved_data.dart';
+import 'package:event_management_app/utils/saved_data.dart';
+import 'package:event_management_app/views/auth_callback.dart';
 import 'package:event_management_app/views/checkSessions.dart';
 import 'package:event_management_app/views/homepage.dart';
 import 'package:event_management_app/views/login.dart';
@@ -20,15 +21,22 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo app',
-        theme: ThemeData.dark(
-          useMaterial3: true,
-        ).copyWith(textTheme: GoogleFonts.interTextTheme()),
-        home: const CheckSessions());
+      title: 'Flutter Demo app',
+      theme: ThemeData.dark(
+        useMaterial3: true,
+      ).copyWith(textTheme: GoogleFonts.interTextTheme()),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const CheckSessions(),
+        '/login': (context) => const LoginPage(),
+        '/signup': (context) => const SignUpPage(),
+        '/home': (context) => const Homepage(),
+        '/auth-callback': (context) => const AuthCallbackPage(),
+      },
+    );
   }
 }
 

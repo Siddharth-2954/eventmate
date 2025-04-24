@@ -5,6 +5,7 @@ import 'package:event_management_app/views/homepage.dart';
 import 'package:event_management_app/views/signup.dart';
 import 'package:event_management_app/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:event_management_app/utils/saved_data.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -124,6 +125,11 @@ class _LoginPageState extends State<LoginPage> {
                   try {
                     final result = await _authService.signInWithGoogle();
                     if (result['success']) {
+                      // Save user data
+                      final user = result['user'];
+                      await SavedData.saveUserName(user.displayName ?? 'User');
+                      await SavedData.saveUserEmail(user.email ?? '');
+
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

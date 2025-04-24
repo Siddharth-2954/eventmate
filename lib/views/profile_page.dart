@@ -1,5 +1,5 @@
 import 'package:event_management_app/constants/colors.dart';
-import 'package:event_management_app/saved_data.dart';
+import 'package:event_management_app/utils/saved_data.dart';
 import 'package:event_management_app/views/login.dart';
 import 'package:event_management_app/views/manage_events.dart';
 import 'package:event_management_app/views/rsvp_events.dart';
@@ -71,8 +71,8 @@ class _ProfileState extends State<Profile> {
                       style: TextStyle(color: kLightGreen),
                     ),
                   ),
-          //  SavedData.getUserIsOrganized()==true?       
-           ListTile(
+                  //  SavedData.getUserIsOrganized()==true?
+                  ListTile(
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -6,49 +6,64 @@ class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId: kIsWeb
-        ? '1008968504628-cg8s9gcuckn4e9vjeu71ds9hf9nioom3.apps.googleusercontent.com' // Replace with your web client ID
-        : null, // For mobile platforms, client ID is not needed
-    scopes: ['profile', 'email'],
+        ? '1008968504628-cg8s9gcuckn4e9vjeu71ds9hf9nioom3.apps.googleusercontent.com'
+        : null,
+    scopes: [
+      'email',
+      'profile',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ],
   );
 
   // Sign in with Google
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
-      // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (kIsWeb) {
+        // Create a new provider
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-      if (googleUser == null) {
-        return {'success': false, 'message': 'Sign in was cancelled by user'};
-      }
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/userinfo.email');
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/userinfo.profile');
 
-      try {
-        // Obtain the auth details from the request
+        // Trigger the auth flow
+        final UserCredential userCredential =
+            await _auth.signInWithPopup(googleProvider);
+
+        return {
+          'success': true,
+          'message': 'Successfully signed in',
+          'user': userCredential.user
+        };
+      } else {
+        // Handle mobile sign-in
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+        if (googleUser == null) {
+          return {'success': false, 'message': 'Sign in was cancelled by user'};
+        }
+
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
-
-        // Create a new credential
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
 
-        // Sign in to Firebase with the credential
         final userCredential = await _auth.signInWithCredential(credential);
         return {
           'success': true,
           'message': 'Successfully signed in',
           'user': userCredential.user
         };
-      } catch (e) {
-        return {
-          'success': false,
-          'message': 'Failed to sign in with Google: ${e.toString()}'
-        };
       }
-    } on Exception catch (e) {
+    } catch (e) {
+      print('Error during Google sign-in: $e');
       return {
         'success': false,
-        'message': 'An error occurred during Google sign-in: ${e.toString()}'
+        'message': 'Failed to sign in with Google: ${e.toString()}'
       };
     }
   }
@@ -56,7 +71,9 @@ class FirebaseAuthService {
   // Sign out
   Future<void> signOut() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
+    if (kIsWeb) {
+      await _googleSignIn.signOut();
+    }
   }
 
   // Get current user

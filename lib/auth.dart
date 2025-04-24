@@ -1,15 +1,15 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:event_management_app/database.dart';
-import 'package:event_management_app/saved_data.dart';
+import 'package:event_management_app/utils/saved_data.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 Client client = Client()
     .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('64b4fc61e5f4aa023618')
-    .setSelfSigned(
-        status: true); // For self signed certificates, only use for development
+    .setProject('64b4fc61e5f4aa023618');
 
 Account account = Account(client);
+
 // Register User
 Future<String> createUser(String name, String email, String password) async {
   try {
@@ -69,8 +69,8 @@ Future<bool> signInWithGoogle() async {
     // Create OAuth2 session with Appwrite
     final session = await account.createOAuth2Session(
       provider: 'google',
-      success: 'http://localhost:8080', // Updated to match our web port
-      failure: 'http://localhost:8080', // Updated to match our web port
+      success: 'http://localhost:54502/auth-callback',
+      failure: 'http://localhost:54502/auth-callback',
       scopes: ['profile', 'email'],
     );
 
